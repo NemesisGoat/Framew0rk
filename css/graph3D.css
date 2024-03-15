@@ -1,4 +1,6 @@
 .paramsBlock {
+    height: 200px;
+    position: absolute;
     background-color: chocolate;
     display: flex;
 }
