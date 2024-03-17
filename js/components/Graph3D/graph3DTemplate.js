@@ -1,6 +1,7 @@
 Template.prototype.graph3DTemplate = () => `<canvas id='canvasGraph3D' class='asg'></canvas>
 <div>
     <select id = 'selectFigure'>
+        <option value = 'hyperbolicCylinder'>Однополостный гиперболоид</option>    
         <option value = 'hyperbolicCylinder'>Гиперболический цилиндр</option>    
         <option value = 'kleinBottle'>Бутылка клейна</option>    
         <option value = 'sphere'>Сфера</option>    
@@ -15,6 +16,6 @@ Template.prototype.graph3DTemplate = () => `<canvas id='canvasGraph3D' class='as
     <input type = 'checkbox' id = 'polygons' checked>Рисовать полигоны</input>  
 </div>
 <div id = 'paramsBlock'>
-    <input>dsh</input>
+    <div id='cube params'></div>
 </div>
     `    

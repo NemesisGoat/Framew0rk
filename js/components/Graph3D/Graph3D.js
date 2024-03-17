@@ -20,7 +20,7 @@ class Graph3D extends Component {
         });
         this.math3D = new Math3D({WIN});
         this.surfaces = new Surfaces;
-        this.scene = this.surfaces.kleinBottle();
+        this.scene = this.surfaces.oneSurfaceHyperboloid();
         this.WIN = WIN;
         this.LIGHT = new Light(-40, 15, -10, 1500);
         this.renderScene();
