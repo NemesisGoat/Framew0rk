@@ -1,7 +1,11 @@
 Template.prototype.graph3DTemplate = () => `<canvas id='canvasGraph3D' class='asg'></canvas>
 <div>
     <select id = 'selectFigure'>
-        <option value = 'hyperbolicCylinder'>Однополостный гиперболоид</option>    
+    <!-- <option value = 'ellipticCylinder'>Эллиптический цилиндр</option> -->   
+        <option value = 'ellipticParaboloid'>Эллиптический параболоид</option>    
+        <option value = 'hyperbolicParaboloid'>Принглс??????</option>    
+        <option value = 'twoSurfaceHyperboloid'>Двуполостный гиперболоид</option>    
+        <option value = 'oneSurfaceHyperboloid'>Однополостный гиперболоид</option>    
         <option value = 'hyperbolicCylinder'>Гиперболический цилиндр</option>    
         <option value = 'kleinBottle'>Бутылка клейна</option>    
         <option value = 'sphere'>Сфера</option>    

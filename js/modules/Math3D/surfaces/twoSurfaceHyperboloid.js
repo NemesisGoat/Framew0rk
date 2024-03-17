@@ -1,15 +1,23 @@
-Surfaces.prototype.oneSurfaceHyperboloid = (count = 30, a = 3, b = 3, c = 4) => {
+Surfaces.prototype.twoSurfaceHyperboloid = (count = 30, a = 3, b = 3, c = 4) => {
     const points = [];
     const edges = [];
     const polygons = [];
     
     // about points
     const da = Math.PI * 2 / count;
-    for (let u = -Math.PI; u < Math.PI; u += da) {
+    for (let u = 0; u < Math.PI * 2; u += da) {
         for (let v = -Math.PI; v < Math.PI; v += da) {
-            const x = a * Math.cosh(u) * Math.cos(v);
-            const y = b * Math.cosh(u) * Math.sin(v);
-            const z = c * Math.sinh(u);
+            const x = a * Math.sinh(u) * Math.cos(v);
+            const y = b * Math.sinh(u) * Math.sin(v);
+            const z = c * Math.cosh(u);
+            points.push(new Point(x, y, z));
+        }
+    }
+    for (let u = 0; u < Math.PI * 2; u += da) {
+        for (let v = -Math.PI; v < Math.PI; v += da) {
+            const x = a * Math.sinh(u) * Math.cos(v);
+            const y = b * Math.sinh(u) * Math.sin(v);
+            const z = -c * Math.cosh(u);
             points.push(new Point(x, y, z));
         }
     }
@@ -36,6 +44,8 @@ Surfaces.prototype.oneSurfaceHyperboloid = (count = 30, a = 3, b = 3, c = 4) => 
         }
 
     }
+
+    console.log(points.length)
 
     return new Surface(points, edges, polygons);
 }

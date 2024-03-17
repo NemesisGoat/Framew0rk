@@ -1,4 +1,4 @@
-Surfaces.prototype.hyperbolicCylinder = (count = 30, a = 2, b = 3) => {
+Surfaces.prototype.hyperbolicCylinder = (count = 20, a = 1, b = 1) => {
     const points = [];
     const edges = [];
     const polygons = [];
@@ -9,7 +9,15 @@ Surfaces.prototype.hyperbolicCylinder = (count = 30, a = 2, b = 3) => {
         for (let v = -Math.PI; v < Math.PI; v += da) {
             const x = a * Math.cosh(u);
             const y = b * Math.sinh(u);
-            const z = 0;
+            const z = v;
+            points.push(new Point(x, y, z));
+        }
+    }
+    for (let u = -Math.PI; u < Math.PI; u += da) {
+        for (let v = -Math.PI; v < Math.PI; v += da) {
+            const x = -a * Math.cosh(u);
+            const y = b * Math.sinh(u);
+            const z = v;
             points.push(new Point(x, y, z));
         }
     }
