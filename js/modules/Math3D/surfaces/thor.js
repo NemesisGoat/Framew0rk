@@ -3,7 +3,7 @@
 // z = r * sin(psi)
 // psi => -Pi ... Pi
 // phi => 0 ... 2*Pi
-Surfaces.prototype.thor = (count = 20, R = 10, r = 5) => {
+Surfaces.prototype.thor = ({ count = 20, R = 10, r = 5, color = '#ffff00' }) => {
     const points = [];
     const edges = [];
     polygons = [];
@@ -32,7 +32,7 @@ Surfaces.prototype.thor = (count = 20, R = 10, r = 5) => {
             edges.push(new Edge(i, i % count));
         }
     }
-    edges.push(new Edge(count**2 - count, count**2 - 1))
+    edges.push(new Edge(count ** 2 - count, count ** 2 - 1))
 
     for (let i = 0; i < points.length; i++) {
         if (points[i + count + 1]) {
@@ -41,16 +41,16 @@ Surfaces.prototype.thor = (count = 20, R = 10, r = 5) => {
                 i + 1,
                 i + count + 1,
                 i + count
-            ], '#ffff00'))
+            ], color))
         } else if (points[i + 1]) {
             polygons.push(new Polygon([
                 i,
                 i + 1,
                 (i + 1) % count,
                 i % count
-            ], '#ffff00'))
+            ], color))
         }
-        
+
     }
 
     return new Surface(points, edges, polygons);

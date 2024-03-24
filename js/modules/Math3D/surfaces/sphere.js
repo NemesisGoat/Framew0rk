@@ -1,27 +1,30 @@
-Surfaces.prototype.sphere = (count = 20, R = 20) => {
+Surfaces.prototype.sphere = ({ count = 20, radius = 10, color = '#ff3333' }) => {
     const points = [];
     const edges = [];
-    const polygons = [];
+    const polygons = []
     // about points
-    const da = Math.PI * 2 / count;
-    for (let phi = 0; phi < Math.PI * 2; phi += da) {
-        for (let psi = -Math.PI; psi < Math.PI; psi += da) {
-            const x = (R * Math.sin(psi)) * Math.cos(phi);
-            const y = (R * Math.sin(psi)) * Math.sin(phi);
-            const z = R * Math.cos(psi);
-            points.push(new Point(x, y, z));
+    const thetaDelta = Math.PI / count;
+    const phiDelta = (Math.PI * 2) / count;
+
+    for (let theta = 0; theta <= Math.PI; theta += thetaDelta) {
+        for (let phi = 0; phi < Math.PI * 2; phi += phiDelta) {
+            const x = radius * Math.sin(theta) * Math.cos(phi);
+            const y = radius * Math.sin(theta) * Math.sin(phi);
+            const z = radius * Math.cos(theta);
+
+            points.push(new Point(x, z, y));
         }
     }
-    // about edges
+
+    // anout edges
     for (let i = 0; i < points.length; i++) {
-        if (points[i + 1]) {
-            if ((i + 1) % count === 0) {
-                edges.push(new Edge(i, i + 1 - count));
-            } else {
-                edges.push(new Edge(i, i + 1));
-            }
+        if (i + 1 < points.length && (i + 1) % count !== 0) {
+            edges.push(new Edge(i, i + 1));
+        } else {
+            edges.push(new Edge(i, i + 1 - count));
         }
-        if (points[i + count]) {
+
+        if (i + count < points.length) {
             edges.push(new Edge(i, i + count));
         } else {
             edges.push(new Edge(i, i % count));
@@ -35,9 +38,10 @@ Surfaces.prototype.sphere = (count = 20, R = 20) => {
                 i + 1,
                 i + count + 1,
                 i + count
-            ], '#ffff00'))
+            ], color));
         }
     }
+
 
     return new Surface(points, edges, polygons);
 }

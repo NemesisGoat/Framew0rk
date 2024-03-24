@@ -110,8 +110,8 @@ class Math3D {
         });
     }
 
-    sortByArtistAlgorithm(surface) {
-        surface.polygons.sort((a, b) => (a.distance < b.distance)? 1 : -1);
+    sortByArtistAlgorithm(polygons) {
+        polygons.sort((a, b) => (a.distance < b.distance)? 1 : -1);
     }
 
     calcIllumination(distance, lumen) {

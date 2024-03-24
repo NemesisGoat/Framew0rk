@@ -22,7 +22,19 @@ Surfaces.prototype.hyperbolicCylinder = (count = 20, a = 1, b = 1) => {
         }
     }
     // about edges
-    for (let i = 0; i < points.length; i++) {
+    for (let i = 0; i < points.length / 2; i++) {
+        if (points[i + 1]) {
+            if ((i + 1) % count === 0) {
+                edges.push(new Edge(i, i + 1 - count));
+            } else {
+                edges.push(new Edge(i, i + 1));
+            }
+        }
+        if (i + count < points.length / 2) {
+            edges.push(new Edge(i, i + count));
+        }
+    }
+    for (let i = points.length / 2; i < points.length; i++) {
         if (points[i + 1]) {
             if ((i + 1) % count === 0) {
                 edges.push(new Edge(i, i + 1 - count));
@@ -32,12 +44,21 @@ Surfaces.prototype.hyperbolicCylinder = (count = 20, a = 1, b = 1) => {
         }
         if (points[i + count]) {
             edges.push(new Edge(i, i + count));
-        } else {
-            edges.push(new Edge(i, i % count));
         }
     }
 
-    for (let i = 0; i < points.length; i++) {
+    for (let i = 0; i < points.length / 2; i++) {
+        if (i + count + 1 < points.length / 2) {
+            polygons.push(new Polygon([
+                i,
+                i + 1,
+                i + count + 1,
+                i + count
+            ], '#ffff00'))
+        }
+
+    }
+    for (let i = points.length / 2; i < points.length; i++) {
         if (points[i + count + 1]) {
             polygons.push(new Polygon([
                 i,
