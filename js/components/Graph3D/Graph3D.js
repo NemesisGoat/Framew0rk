@@ -20,16 +20,18 @@ class Graph3D extends Component {
         });
         this.math3D = new Math3D({ WIN });
         this.surfaces = new Surfaces;
-        this.scene = [
-            this.surfaces.thor({ color: '#444444' }),
-            this.surfaces.sphere({ color: '#ff0000' })
-        ];
+        this.scene = this.SolarSystem();
         this.WIN = WIN;
-        this.LIGHT = new Light(30, 15, 20, 1500);
+        this.LIGHT = new Light(-40, 15, -10, 1500);
 
         this.drawPoints = true;
         this.drawEdges = true;
         this.drawPolygons = true;
+
+        setInterval(() => {
+            this.scene.forEach(surface => surface.doAnimation(this.math3D));
+            this.renderScene();
+        }, 50)
 
         this.renderScene();
     }
@@ -70,8 +72,9 @@ class Graph3D extends Component {
     wheel(event) {
         event.preventDefault();
         const delta = (event.wheelDelta > 0) ? 1.2 : 0.8;
+        const matrix = this.math3D.zoom(delta);
         this.scene.forEach(surface =>
-            surface.points.forEach(point => this.math3D.zoom(delta, point))
+            surface.points.forEach(point => this.math3D.transform(matrix, point))
         );
         this.renderScene();
     }
@@ -79,10 +82,12 @@ class Graph3D extends Component {
     mousemove(event) {
         if (this.canMove) {
             const gradus = Math.PI / 180 / 4;
+            const matrixOx = this.math3D.rotateOx((this.dy - event.offsetY) * gradus);
+            const matrixOy = this.math3D.rotateOy((this.dx - event.offsetX) * gradus);
             this.scene.forEach(surface =>
                 surface.points.forEach(point => {
-                    this.math3D.rotateOx(point, (this.dy - event.offsetY) * gradus);
-                    this.math3D.rotateOy(point, (this.dx - event.offsetX) * gradus);
+                    this.math3D.transform(matrixOx, point);
+                    this.math3D.transform(matrixOy, point);
                 })
             );
             this.renderScene();
@@ -95,6 +100,15 @@ class Graph3D extends Component {
         const figure = document.getElementById('selectFigure').value;
         this.scene = [this.surfaces[figure]({})];
         this.renderScene();
+    }
+
+    SolarSystem() {
+        const Earth = this.surfaces.sphere({});
+        Earth.addAnimation('rotateOy', 0.1);
+        const Moon = this.surfaces.cube({color: '#e6e6fa'});
+        Moon.addAnimation('rotateOx', 0.2);
+        Moon.addAnimation('rotateOz', 0.05);
+        return [Earth, Moon];
     }
 
     renderScene() {

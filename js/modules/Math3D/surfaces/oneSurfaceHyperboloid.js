@@ -1,4 +1,4 @@
-Surfaces.prototype.oneSurfaceHyperboloid = (count = 30, a = 3, b = 3, c = 4) => {
+Surfaces.prototype.oneSurfaceHyperboloid = ({count = 30, a = 3, b = 3, c = 4, color = '#0000ff'}) => {
     const points = [];
     const edges = [];
     const polygons = [];
@@ -32,7 +32,7 @@ Surfaces.prototype.oneSurfaceHyperboloid = (count = 30, a = 3, b = 3, c = 4) => 
                 i + 1,
                 i + count + 1,
                 i + count
-            ], '#ffff00'))
+            ], color))
         }
 
     }

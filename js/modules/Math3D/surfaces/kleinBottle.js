@@ -1,4 +1,4 @@
-Surfaces.prototype.kleinBottle = (count = 30) => {
+Surfaces.prototype.kleinBottle = ({count = 30, color = '#0033ff'}) => {
     const points = [];
     const edges = [];
     const polygons = [];
@@ -36,7 +36,7 @@ Surfaces.prototype.kleinBottle = (count = 30) => {
                 i + 1,
                 i + count + 1,
                 i + count
-            ], '#ffff00'))
+            ], color))
         }
 
     }

@@ -1,4 +1,4 @@
-Surfaces.prototype.hyperbolicCylinder = (count = 20, a = 1, b = 1) => {
+Surfaces.prototype.hyperbolicCylinder = ({count = 20, a = 1, b = 1, color = '#00ffff'}) => {
     const points = [];
     const edges = [];
     const polygons = [];
@@ -54,7 +54,7 @@ Surfaces.prototype.hyperbolicCylinder = (count = 20, a = 1, b = 1) => {
                 i + 1,
                 i + count + 1,
                 i + count
-            ], '#ffff00'))
+            ], color))
         }
 
     }
@@ -65,7 +65,7 @@ Surfaces.prototype.hyperbolicCylinder = (count = 20, a = 1, b = 1) => {
                 i + 1,
                 i + count + 1,
                 i + count
-            ], '#ffff00'))
+            ], color))
         }
 
     }

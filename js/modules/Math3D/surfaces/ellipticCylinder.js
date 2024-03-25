@@ -1,4 +1,4 @@
-Surfaces.prototype.ellipticCylinder = (count = 20, a = 2, b = 2) => {
+Surfaces.prototype.ellipticCylinder = ({count = 20, a = 2, b = 2}) => {
     const points = [];
     const edges = [];
     const polygons = [];

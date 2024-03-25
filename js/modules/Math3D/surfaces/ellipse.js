@@ -1,4 +1,4 @@
-Surfaces.prototype.ellipse = (count = 20, rX = 10, rY = 5, rZ = 6) => {
+Surfaces.prototype.ellipse = ({count = 20, rX = 10, rY = 5, rZ = 6, color = '#ff6600'}) => {
     const points = [];
     const edges = [];
     const polygons = [];
@@ -34,7 +34,7 @@ Surfaces.prototype.ellipse = (count = 20, rX = 10, rY = 5, rZ = 6) => {
                 i + 1,
                 i + count + 1,
                 i + count
-            ], '#ffff00'))
+            ], color))
         }
 
     }

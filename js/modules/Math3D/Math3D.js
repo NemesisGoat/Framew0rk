@@ -18,7 +18,7 @@ class Math3D {
         return (point.y - y0) / (point.z - z0) * (zs - z0) + y0;
     }
 
-    multMatrix(T, m) {
+    multPoint(T, m) {
         const a = [0, 0, 0, 0];
         for (let i = 0; i < T.length; i++) {
             let b = 0;
@@ -30,69 +30,61 @@ class Math3D {
         return a; 
     }
 
+    multMatrix(a, b) {
+        let c = [[], [], [], []]
+        for (let i = 0; i < 4; i++) {
+            for (let j = 0; j < 4; j++) {
+                for (let k = 0; k < 4; k++) {
+                    c[i][j] = a[i][k] * b[k][j];
+                }
+            }
+        }
+        return c;
+    }
+
     zoom(delta, point) {
-        const T = [
+        return [
             [delta, 0, 0, 0],
             [0, delta, 0, 0],
             [0, 0, delta, 0],
             [0, 0, 0, 1]
         ];
-        const array = this.multMatrix(T, [point.x, point.y, point.z, 1]);
-        point.x = array[0];
-        point.y = array[1];
-        point.z = array[2];
     }
 
-    move(point, dx = 0, dy = 0, dz = 0) {
-        const T = [
+    move(dx = 0, dy = 0, dz = 0) {
+        return [
             [1, 0, 0, 0],
             [0, 1, 0, 0],
             [0, 0, 1, 0],
             [dx, dy, dz, 1]
         ]
-        const array = this.multMatrix(T, [point.x, point.y, point.z, 1]);
-        point.x = array[0];
-        point.y = array[1];
-        point.z = array[2];
     }
 
-    rotateOx(point, alpha) {
-        const T = [
+    rotateOx(alpha) {
+        return [
             [1, 0, 0, 0],
             [0, Math.cos(alpha), Math.sin(alpha), 0],
             [0, -Math.sin(alpha), Math.cos(alpha), 0],
             [0, 0, 0, 1],
         ]
-        const array = this.multMatrix(T, [point.x, point.y, point.z, 1]);
-        point.x = array[0];
-        point.y = array[1];
-        point.z = array[2];
     }
 
-    rotateOy(point, alpha) {
-        const T = [
+    rotateOy(alpha) {
+        return [
             [Math.cos(alpha), 0, -Math.sin(alpha), 0],
             [0, 1, 0, 0],
             [Math.sin(alpha), 0, Math.cos(alpha), 0],
             [0, 0, 0, 1],
         ]
-        const array = this.multMatrix(T, [point.x, point.y, point.z, 1]);
-        point.x = array[0];
-        point.y = array[1];
-        point.z = array[2];
     }
 
-    rotateOz(point, alpha) {
-        const T = [
+    rotateOz(alpha) {
+        return [
             [Math.cos(alpha), Math.sin(alpha), 0, 0],
             [-Math.sin(alpha), Math.cos(alpha), 0, 0],
             [0, 0, 1, 0],
             [0, 0, 0, 1],
         ]
-        const array = this.multMatrix(T, [point.x, point.y, point.z, 1]);
-        point.x = array[0];
-        point.y = array[1];
-        point.z = array[2];
     }
 
     calcDistance(surface, endPoint, name) {
@@ -117,5 +109,22 @@ class Math3D {
     calcIllumination(distance, lumen) {
         const illum = distance ? lumen / distance**2 : 1;
         return illum > 1 ? 1 : illum;
+    }
+
+    transform(matrix, point) {
+        const result = this.multPoint(matrix, [point.x, point.y, point.z, 1]);
+        point.x = result[0];
+        point.y = result[1];
+        point.z = result[2];
+    }
+
+    getTransform(...args) {
+        return args.reduce(
+            (S, t) => this.multMatrix(S,t),
+            [[1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1]]
+        );
     }
 }

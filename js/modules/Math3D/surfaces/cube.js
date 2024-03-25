@@ -1,4 +1,4 @@
-Surfaces.prototype.cube = () => {
+Surfaces.prototype.cube = ({color = '#00ff44'}) => {
     return new Surface([
         new Point(10, 10, 10),
         new Point(10, -10, 10),
@@ -22,11 +22,11 @@ Surfaces.prototype.cube = () => {
         new Edge(6, 7),
         new Edge(7, 4)
     ], [
-        new Polygon([0, 1, 2, 3], '#993333'),
-        new Polygon([4, 5, 6, 7], '#993333'),
-        new Polygon([0, 1, 6, 5], '#993333'),
-        new Polygon([3, 2, 7, 4], '#993333'),
-        new Polygon([0, 3, 4, 5], '#993333'),
-        new Polygon([1, 2, 7, 6], '#993333')
+        new Polygon([0, 1, 2, 3], color),
+        new Polygon([4, 5, 6, 7], color),
+        new Polygon([0, 1, 6, 5], color),
+        new Polygon([3, 2, 7, 4], color),
+        new Polygon([0, 3, 4, 5], color),
+        new Polygon([1, 2, 7, 6], color)
     ]);
 }

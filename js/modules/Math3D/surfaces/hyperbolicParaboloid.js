@@ -1,4 +1,4 @@
-Surfaces.prototype.hyperbolicParaboloid = (count = 20, a = 2, b = 2) => {
+Surfaces.prototype.hyperbolicParaboloid = ({count = 20, a = 2, b = 2, color = '#ffff00'}) => {
     const points = [];
     const edges = [];
     const polygons = [];
@@ -33,7 +33,7 @@ Surfaces.prototype.hyperbolicParaboloid = (count = 20, a = 2, b = 2) => {
                     i + 1,
                     i + count + 1,
                     i + count
-                ], '#ffff00'))
+                ], color))
             }
         }
 
