@@ -106,8 +106,8 @@ class Graph3D extends Component {
         const Earth = this.surfaces.sphere({});
         Earth.addAnimation('rotateOy', 0.1);
         const Moon = this.surfaces.cube({color: '#e6e6fa'});
-        Moon.addAnimation('rotateOx', 0.2, new Point(10, 300, 10));
-        Moon.addAnimation('rotateOz', 0.05, new Point(10, 300, 10));
+        Moon.addAnimation('rotateOx', 0.2, new Point(5, 5, 5));
+        Moon.addAnimation('rotateOz', 0.05, new Point(10, 10, 10));
         return [Earth, Moon];
     }
 
