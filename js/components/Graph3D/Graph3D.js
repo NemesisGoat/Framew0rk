@@ -103,11 +103,12 @@ class Graph3D extends Component {
     }
 
     SolarSystem() {
-        const Earth = this.surfaces.sphere({});
+        const Earth = this.surfaces.sphere({color: '#0022ff'});
         Earth.addAnimation('rotateOy', 0.1);
-        const Moon = this.surfaces.cube({color: '#e6e6fa'});
-        Moon.addAnimation('rotateOx', 0.2, new Point(5, 5, 5));
-        Moon.addAnimation('rotateOz', 0.05, new Point(10, 10, 10));
+        const Moon = this.surfaces.hyperbolicParaboloid({color: '#969ba3'});
+        Moon.addAnimation('rotateOx', 0.1, new Point(0, 0, 0));
+        Moon.addAnimation('rotateOy', 0.1, new Point(0, 0, 0));
+        Moon.addAnimation('rotateOz', 0.05, new Point(25, 25, 25));
         return [Earth, Moon];
     }
 
