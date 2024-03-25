@@ -32,11 +32,14 @@ class Math3D {
 
     multMatrix(a, b) {
         let c = [[], [], [], []]
+        let s = 0;
         for (let i = 0; i < 4; i++) {
             for (let j = 0; j < 4; j++) {
+                s = 0;
                 for (let k = 0; k < 4; k++) {
-                    c[i][j] = a[i][k] * b[k][j];
+                    s += a[i][k] * b[k][j];
                 }
+                c[i].push(s);
             }
         }
         return c;
