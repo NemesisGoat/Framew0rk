@@ -1,4 +1,4 @@
-Surfaces.prototype.sphere = ({ count = 20, radius = 10, color = '#ff3333' }) => {
+Surfaces.prototype.sphere = ({ count = 20, radius = 10, color = '#ff3333', x0 = 0, y0 = 0, z0 = 0 }) => {
     const points = [];
     const edges = [];
     const polygons = []
@@ -12,7 +12,7 @@ Surfaces.prototype.sphere = ({ count = 20, radius = 10, color = '#ff3333' }) => 
             const y = radius * Math.sin(theta) * Math.sin(phi);
             const z = radius * Math.cos(theta);
 
-            points.push(new Point(x, z, y));
+            points.push(new Point(x + x0, y + y0, z + z0));
         }
     }
 
@@ -43,5 +43,5 @@ Surfaces.prototype.sphere = ({ count = 20, radius = 10, color = '#ff3333' }) => 
     }
 
 
-    return new Surface(points, edges, polygons);
+    return new Surface(points, edges, polygons, new Point(x0, y0, z0));
 }

@@ -21,9 +21,11 @@ function Graph(options) {
 
     //Отображение координаты x на canvas
     const xs = (x) => ((x - WIN.LEFT) / WIN.WIDTH) * canvas.width;
+    const xsPolyhon = (x) => (x / WIN.WIDTH) * canvas.width;
 
     //Отображение координаты y на canvas
     const ys = (y) => (WIN.HEIGHT - (y - WIN.BOTTOM)) * canvas.width / WIN.HEIGHT;
+    const ysPolygon = (y) => (WIN.HEIGHT - y) * canvas.width / WIN.HEIGHT;
 
     //xs наоборот
     this.sx = x => x * WIN.WIDTH / canvas.width + WIN.LEFT;

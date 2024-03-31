@@ -1,6 +1,20 @@
 class Math3D {
     constructor({WIN}) {
         this.WIN = WIN;
+
+        this.plane = {
+            A: 0,
+            B: 0,
+            C: 0,
+
+            x0: 0,
+            y0: 0,
+            z0: 0,
+
+            xs0: 0,
+            ys0: 0,
+            zs0: 0
+        }
     }
 
     xs(point) {
@@ -45,7 +59,19 @@ class Math3D {
         return c;
     }
 
-    zoom(delta, point) {
+    getVector(a, b) {
+        return {
+            x: b.x - a.x,
+            y: b.y - a.y,
+            z: b.z - a.z
+        }
+    }
+
+    scalProd(a, b) {
+        return a.x * b.x + a.y * b.y + a.z * b.z;
+    }
+
+    zoom(delta) {
         return [
             [delta, 0, 0, 0],
             [0, delta, 0, 0],
@@ -90,6 +116,45 @@ class Math3D {
         ]
     }
 
+    calcPlaneEquation(point1, point2) {
+        const vector = this.getVector(point1, point2);
+        this.plane.A = vector.x;
+        this.plane.B = vector.y;
+        this.plane.C = vector.z;
+        this.plane.x0 = point2.x;
+        this.plane.y0 = point2.y;
+        this.plane.z0 = point2.z;
+        this.plane.xs0 = point1.x;
+        this.plane.ys0 = point1.y;
+        this.plane.zs0 = point1.z;
+    }
+
+    calcCorner(a, b) {
+        return this.scalProd(a, b) / (Math.sqrt(this.scalProd(a, a)) * Math.sqrt(this.scalProd(b, b)));
+    }
+
+    moduleVector(a) {
+        return Math.sqrt(a.x**2 + a.y**2 + a.z**2);
+    }
+
+    getProection(point) {
+        const { A, B, C, x0, y0, z0, xs0, ys0, zs0 } = this.plane;
+        const m = point.x - xs0;
+        const n = point.y - ys0;
+        const p = point.z - zs0;
+        const t = (A * (x0 - xs0) + B * (y0 - ys0) + C * (z0 - zs0)) / (A*m + B*n + C*p);
+        const ps = {
+            x: x0 + m * t, 
+            y: y0 + n * t, 
+            z: z0 + p * t 
+        }
+        return {
+            x: ps.x - A, 
+            y: ps.y - B, 
+            z: ps.z - C 
+        }
+    }
+
     calcDistance(surface, endPoint, name) {
         surface.polygons.forEach(polygon => {
             let x = 0, y = 0, z = 0;
@@ -106,7 +171,7 @@ class Math3D {
     }
 
     sortByArtistAlgorithm(polygons) {
-        polygons.sort((a, b) => (a.distance < b.distance)? 1 : -1);
+        polygons.sort((a, b) => b.distance - a.distance);
     }
 
     calcIllumination(distance, lumen) {

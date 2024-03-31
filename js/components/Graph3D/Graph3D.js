@@ -1,3 +1,15 @@
+window.requestAnimationFrame = (function () {
+    return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function (callback) {
+            window.setTimeout(callback, 1000 / 60);
+        };
+})();
+
+
 class Graph3D extends Component {
     constructor(options) {
         super(options);
@@ -6,6 +18,9 @@ class Graph3D extends Component {
             BOTTOM: -10,
             WIDTH: 20,
             HEIGHT: 20,
+            P1: new Point(-10, 10, -30),
+            P2: new Point(-10, -10, -30),
+            P3: new Point(10, -10, -30),
             CENTER: new Point(0, 0, -30),
             CAMERA: new Point(0, 0, -50)
         }
@@ -30,10 +45,28 @@ class Graph3D extends Component {
 
         setInterval(() => {
             this.scene.forEach(surface => surface.doAnimation(this.math3D));
-            this.renderScene();
         }, 50)
+        
+        let FPS = 0;
+        let countFPS = 0;
+        let timestamp = Date.now();
 
-        this.renderScene();
+        const renderLoop = () => {
+            countFPS++;
+            const currentTimestamp = Date.now();
+            if (currentTimestamp - timestamp >= 1000) {
+                FPS = countFPS;
+                countFPS = 0;
+                timestamp = currentTimestamp;
+            }
+
+            this.calcPlaneEquation();
+            this.calcWindowVectors();
+            this.renderScene(FPS);
+            requestAnimationFrame(renderLoop);
+        }
+
+        renderLoop();
     }
 
     changeStyle() {
@@ -55,7 +88,6 @@ class Graph3D extends Component {
                 'change',
                 (event) => {
                     this[event.target.dataset.custom] = event.target.checked;
-                    this.renderScene();
                 }
             )
         );
@@ -73,24 +105,25 @@ class Graph3D extends Component {
         event.preventDefault();
         const delta = (event.wheelDelta > 0) ? 1.2 : 0.8;
         const matrix = this.math3D.zoom(delta);
-        this.scene.forEach(surface =>
-            surface.points.forEach(point => this.math3D.transform(matrix, point))
-        );
-        this.renderScene();
+        this.math3D.transform(matrix, this.WIN.CAMERA);
+        this.math3D.transform(matrix, this.WIN.CENTER);
     }
 
     mousemove(event) {
         if (this.canMove) {
             const gradus = Math.PI / 180 / 4;
-            const matrixOx = this.math3D.rotateOx((this.dy - event.offsetY) * gradus);
-            const matrixOy = this.math3D.rotateOy((this.dx - event.offsetX) * gradus);
-            this.scene.forEach(surface =>
-                surface.points.forEach(point => {
-                    this.math3D.transform(matrixOx, point);
-                    this.math3D.transform(matrixOy, point);
-                })
-            );
-            this.renderScene();
+            const matrixOx = this.math3D.rotateOx((this.dx - event.offsetX) * gradus);
+            const matrixOy = this.math3D.rotateOy((this.dy - event.offsetY) * gradus);
+            this.math3D.transform(matrixOx, this.WIN.CAMERA);
+            this.math3D.transform(matrixOx, this.WIN.CENTER);
+            this.math3D.transform(matrixOx, this.WIN.P1);
+            this.math3D.transform(matrixOx, this.WIN.P2);
+            this.math3D.transform(matrixOx, this.WIN.P3);
+            this.math3D.transform(matrixOy, this.WIN.CAMERA);
+            this.math3D.transform(matrixOy, this.WIN.CENTER);
+            this.math3D.transform(matrixOy, this.WIN.P1);
+            this.math3D.transform(matrixOy, this.WIN.P2);
+            this.math3D.transform(matrixOy, this.WIN.P3);
         }
         this.dx = event.offsetX;
         this.dy = event.offsetY;
@@ -99,20 +132,43 @@ class Graph3D extends Component {
     selectFigure() {
         const figure = document.getElementById('selectFigure').value;
         this.scene = [this.surfaces[figure]({})];
-        this.renderScene();
     }
 
     SolarSystem() {
-        const Earth = this.surfaces.sphere({color: '#0022ff'});
-        Earth.addAnimation('rotateOy', 0.1);
-        const Moon = this.surfaces.hyperbolicParaboloid({color: '#969ba3'});
-        Moon.addAnimation('rotateOx', 0.1, new Point(0, 0, 0));
-        Moon.addAnimation('rotateOy', 0.1, new Point(0, 0, 0));
-        Moon.addAnimation('rotateOz', 0.05, new Point(25, 25, 25));
-        return [Earth, Moon];
+        const Sun = this.surfaces.sphere({color: '#ffff00', radius: 10})
+        Sun.addAnimation('rotateOy', 0.01);
+        Sun.addAnimation('rotateOz', 0.01);
+        const Earth = this.surfaces.sphere({color: '#0022ff', radius: 5, x0: 20});
+        Earth.addAnimation('rotateOy', 0.03, Sun.center);
+        Earth.addAnimation('rotateOz', 0.05);
+        const Moon = this.surfaces.sphere({color: '#969ba3', radius:1, x0: Earth.center.x, y0: Earth.center.y, z0: Earth.center.z});
+        Moon.addAnimation('rotateOx', 0.1);
+        return [Sun, Earth, Moon];
     }
 
-    renderScene() {
+    calcPlaneEquation() {
+        this.math3D.calcPlaneEquation(this.WIN.CAMERA, this.WIN.CENTER)
+    }
+
+    getProection(point) {
+        const M = this.math3D.getProection(point);
+        const P2M = this.math3D.getVector(this.WIN.P2, M);
+        const cosa = this.math3D.calcCorner(this.P1P2, M);
+        const cosb = this.math3D.calcCorner(this.P2P3, M);
+        const module = this.math3D.moduleVector(P2M);
+        return {
+            x: cosa * module,
+            y: cosb * module
+        }
+    }
+
+    calcWindowVectors() {
+        this.P1P2 = this.math3D.getVector(this.WIN.P2, this.WIN.P1);
+        this.P2P3 = this.math3D.getVector(this.WIN.P3, this.WIN.P2);
+    }
+
+    renderScene(FPS) {
+        console.log(FPS);
         this.graph.clear();
         if (this.drawPolygons) {
             const polygons = [];
@@ -130,8 +186,8 @@ class Graph3D extends Component {
             polygons.forEach(polygon => {
                 const points = polygon.points.map(index =>
                     new Point(
-                        this.math3D.xs(this.scene[polygon.index].points[index]),
-                        this.math3D.ys(this.scene[polygon.index].points[index])
+                        this.getProection(this.scene[polygon.index].points[index]).x,
+                        this.getProection(this.scene[polygon.index].points[index]).y
                     )
                 );
                 const lumen = this.math3D.calcIllumination(polygon.lumen, this.LIGHT.lumen);
@@ -146,8 +202,8 @@ class Graph3D extends Component {
             this.scene.forEach(surface =>
                 surface.points.forEach(
                     point => this.graph.point(
-                        this.math3D.xs(point),
-                        this.math3D.ys(point)
+                        this.getProection(point).x,
+                        this.getProection(point).y
                     )
                 )
             );
@@ -158,8 +214,8 @@ class Graph3D extends Component {
                     const point1 = surface.points[edge.p1];
                     const point2 = surface.points[edge.p2];
                     this.graph.line(
-                        this.math3D.xs(point1), this.math3D.ys(point1),
-                        this.math3D.xs(point2), this.math3D.ys(point2)
+                        this.getProection(point1).x, this.getProection(point1).y,
+                        this.getProection(point2).x, this.getProection(point2).y
                     );
                 })
             );
