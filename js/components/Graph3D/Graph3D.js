@@ -141,8 +141,9 @@ class Graph3D extends Component {
         const Earth = this.surfaces.sphere({color: '#0022ff', radius: 5, x0: 20});
         Earth.addAnimation('rotateOy', 0.03, Sun.center);
         Earth.addAnimation('rotateOz', 0.05);
-        const Moon = this.surfaces.sphere({color: '#969ba3', radius:1, x0: Earth.center.x, y0: Earth.center.y, z0: Earth.center.z});
-        Moon.addAnimation('rotateOx', 0.1);
+        const Moon = this.surfaces.sphere({color: '#969ba3', radius:2, x0: Earth.center.x, y0: Earth.center.y, z0: Earth.center.z + 8});
+        Moon.addAnimation('rotateOx', 0.1, Earth.center);
+        Moon.addAnimation('rotateOy', 0.03, Sun.center);
         return [Sun, Earth, Moon];
     }
 
