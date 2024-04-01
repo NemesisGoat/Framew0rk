@@ -176,12 +176,25 @@ class Graph3D extends Component {
             this.scene.forEach((surface, index) => {
                 this.math3D.calcDistance(surface, this.WIN.CAMERA, 'distance');
                 this.math3D.calcDistance(surface, this.LIGHT, 'lumen');
+                this.math3D.calcCenter(surface);
+                this.math3D.calcRadius(surface);
                 surface.polygons.forEach(polygon => {
                     polygon.index = index;
                     polygons.push(polygon);
                 });
             });
 
+            // const polygons = [];
+            // this.scene.forEach((surface, index) => {
+            //     this.math3D.calcCenter(surface);
+            //     this.math3D.calcRadius(surface);
+            //     this.math3D.calcDistance(surface, CAMERA);
+            //     this.math3D.calcDistance(surface, LIGHT);
+            //     surface.polygons.forEach(polygon => {
+            //         polygon.index = index;
+            //         polygons.push(polygon);
+            //     });
+            // });
             this.math3D.sortByArtistAlgorithm(polygons);
 
             polygons.forEach(polygon => {
@@ -191,7 +204,8 @@ class Graph3D extends Component {
                         this.getProection(this.scene[polygon.index].points[index]).y
                     )
                 );
-                const lumen = this.math3D.calcIllumination(polygon.lumen, this.LIGHT.lumen);
+                const {isShadow, dark} = this.math3D.calcShadow(polygon, this.scene, this.LIGHT);
+                const lumen = this.math3D.calcIllumination(polygon.lumen, this.LIGHT.lumen * (isShadow ? dark : 1));
                 let { r, g, b } = polygon.color;
                 r = Math.round(r * lumen);
                 g = Math.round(g * lumen);

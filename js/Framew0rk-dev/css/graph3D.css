@@ -1,9 +1,0 @@
-#paramsBlock {
-    position:absolute;
-    left: 625px;
-    top: 10%;
-    background-color: chocolate;
-    display: inline-flex;
-    align-content: space-around;
-    flex-wrap: wrap;
-}
